@@ -14,11 +14,11 @@ namespace Web.Api.Infrastructure.Data.Repositories
 {
     internal sealed class UserRepository : EfRepository<User>, IUserRepository
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser<int>> _userManager;
         private readonly IMapper _mapper;
         
 
-        public UserRepository(UserManager<AppUser> userManager, IMapper mapper, AppDbContext appDbContext): base(appDbContext)
+        public UserRepository(UserManager<AppUser<int>> userManager, IMapper mapper, AppDbContext appDbContext): base(appDbContext)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -26,27 +26,27 @@ namespace Web.Api.Infrastructure.Data.Repositories
 
         public async Task<CreateUserResponse> Create(string firstName, string lastName, string email, string userName, string password)
         {
-            var appUser = new AppUser {Email = email, UserName = userName};
+            var appUser = new AppUser<int> {Email = email, UserName = userName};
             var identityResult = await _userManager.CreateAsync(appUser, password);
 
-            if (!identityResult.Succeeded) return new CreateUserResponse(appUser.Id, false,identityResult.Errors.Select(e => new Error(e.Code, e.Description)));
+            if (!identityResult.Succeeded) return new CreateUserResponse(appUser.Id.ToString(), false,identityResult.Errors.Select(e => new Error(e.Code, e.Description)));
           
-            var user = new User(firstName, lastName, appUser.Id, appUser.UserName);
+            var user = new User(firstName, lastName, appUser.Id.ToString(), appUser.UserName);
             _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
 
-            return new CreateUserResponse(appUser.Id, identityResult.Succeeded, identityResult.Succeeded ? null : identityResult.Errors.Select(e => new Error(e.Code, e.Description)));
+            return new CreateUserResponse(appUser.Id.ToString(), identityResult.Succeeded, identityResult.Succeeded ? null : identityResult.Errors.Select(e => new Error(e.Code, e.Description)));
         }
 
         public async Task<User> FindByName(string userName)
         {
             var appUser = await _userManager.FindByNameAsync(userName);
-            return appUser == null ? null : _mapper.Map(appUser, await GetSingleBySpec(new UserSpecification(appUser.Id)));
+            return appUser == null ? null : _mapper.Map(appUser, await GetSingleBySpec(new UserSpecification(appUser.Id.ToString())));
         }
 
         public async Task<bool> CheckPassword(User user, string password)
         {
-            return await _userManager.CheckPasswordAsync(_mapper.Map<AppUser>(user), password);
+            return await _userManager.CheckPasswordAsync(_mapper.Map<AppUser<int>>(user), password);
         }
     }
 }

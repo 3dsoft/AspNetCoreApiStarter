@@ -118,7 +118,7 @@ namespace Web.Api
             });
 
             // add identity
-            var identityBuilder = services.AddIdentityCore<AppUser>(o =>
+            var identityBuilder = services.AddIdentityCore<AppUser<int>>(o =>
             {
                 // configure identity options
                 o.Password.RequireDigit = false;
@@ -128,8 +128,7 @@ namespace Web.Api
                 o.Password.RequiredLength = 4;
                 o.Password.RequiredUniqueChars = 0;
             });
-
-            identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
+            identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole<int>), identityBuilder.Services);
             identityBuilder.AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
