@@ -62,6 +62,9 @@ Identity와 JWT 인증 기능이 포함된 ASP.NET Core v2.1 Web API 프로젝�
   Authorization -> Bearer Token에 Token값 입력
 ```
 
+# User ID가 GUID 형식인것을 원할경우, 아래의 커밋에서 받을것. 이후부터는 int로 변경되었음.
+User ID type is GUID : https://github.com/3dsoft/AspNetCoreApiStarter/tree/9a86dcafa31d46c2a827cb1c6e0c3688ec659a5e
+
 # Original Contact
   mark@fullstackmark.com
  
