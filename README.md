@@ -1,27 +1,64 @@
+# 자세한 설명
+https://fullstackmark.com/post/19/jwt-authentication-flow-with-refresh-tokens-in-aspnet-core-web-api
+
 # AspNetCoreApiStarter
-An ASP.NET Core (v2.1) Web API project to quickly bootstrap new projects.  Includes Identity, JWT authentication w/ refresh tokens.
+Identity와 JWT 인증 기능이 포함된 ASP.NET Core v2.1 Web API 프로젝트.
 
-# Setup
-- Uses Sql Server Express LocalDB (If using Visual Studio install it under Individual Components in the Visual Studio installer or install separately using [this link](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-2016-express-localdb?view=sql-server-2017).
-- Apply database migrations to create the db.  From a command line within the *Web.Api.Infrastructure* project folder use the dotnet CLI to run : 
-- <code>Web.Api.Infrastructure>**dotnet ef database update --context AppDbContext**</code>
-- <code>Web.Api.Infrastructure>**dotnet ef database update --context AppIdentityDbContext**</code>
+# 설정 방법
+- 소스를 받아서 프로젝트를 오픈한다.
+- 솔루션 빌드를 해준다.
+- 사용자 인증 정보를 저장하기 위한 DB를 만들기 위해 *Web.Api.Infrastructure* 폴더로 이동한다. 
+- CMD 창을 열고 아래와 같이 실행시켜준다.
+```
+  dotnet ef database update --context AppDbContext
+  dotnet ef database update --context AppIdentityDbContext
+``` 
+  패키지 관리자 콘솔에서 작업할 경우, [기본 프로젝트]를 Web.Api.Infrastructure로 선택한 뒤에 아래와 같이 입력한다.
+```
+  update-database -context AppDbContext
+  update-database -context AppIdentityDbContext
+```  
+- 실행하면 끝.
 
-# Visual Studio
-Open the solution file <code>AspNetCoreApiStarter.sln</code> and build/run.
 
-# Visual Studio Code
-Open the <code>src</code> folder and <code>F5</code> to build/run.
+# Swagger UI Enabled
+- http://localhost:5000/swagger
 
-# Swagger Enabled
-To explore and test the available APIs simply run the project and use the Swagger UI.
 
-The available APIs include:
-- POST `/api/accounts` - Creates a new user.
-- POST `/api/auth/login` - Authenticates a user.
-- POST `/api/auth/refreshtoken` - Refreshes expired access tokens.
-- GET `/api/protected` - Protected controller for testing role-based authorization.
+# The available APIs
+- Register
+```
+  [POST] http://localhost:5000/api/accounts
+         {
+           "firstName": "string",
+           "lastName": "string",
+           "email": "string",
+           "userName": "string",
+           "password": "password"
+         }
+```
+- Login
+```
+  [POST] http://localhost:5000/api/auth/login
+         {
+            "userName": "string",
+            "password": "password"
+         }
+```
+- Refresh Token
+```
+  [POST] http://localhost:5000/api/auth/refreshtoken
+         {
+            "accessToken": "",
+            "refreshToken": ""
+         }
+```  
+- Auth Test
+```
+  [GET] http://localhost:5000/api/Protected
+  Authorization -> Bearer Token에 Token값 입력
+```
 
-# Contact
-mark@fullstackmark.com
+# Original Contact
+  mark@fullstackmark.com
  
